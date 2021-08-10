@@ -1,31 +1,26 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
-	"strconv"
+	// "git.bolor.net/bolorsoft/qa/pkg/application"
+	// "git.bolor.net/bolorsoft/qa/pkg/common/oapi"
+	// "git.bolor.net/bolorsoft/qa/pkg/common/ocookie"
 )
 
-func home(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/" {
-		http.NotFound(w, r)
-		return
+const (
+	MB = 1 << 20
+	KB = 1 << 10
+)
+
+func cacheUserID(app *application.Application) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if err := app.Blogin.CacheAuthToken(r); err != nil {
+			oapi.ClientError(w, http.StatusBadRequest)
+			return
+		}
+		w.Write([]byte("OK"))
 	}
-	w.Write([]byte("Hello from Snippetbox"))
 }
-func showSnippet(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(r.URL.Query().Get("id"))
-	if err != nil || id < 1 {
-		http.NotFound(w, r)
-		return
-	}
-	fmt.Fprintf(w, "Display a specific snippet with ID %d...", id)
-}
-func createSnippet(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		w.Header().Set("Allow", http.MethodPost)
-		http.Error(w, "Method Not Allowed", 405)
-		return
-	}
-	w.Write([]byte("Create a new snippet..."))
-}
+
+
+func 

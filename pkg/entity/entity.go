@@ -21,7 +21,7 @@ func New(db *gorm.DB, loc *time.Location) *Database {
 type Owners struct {
 	gorm.Model
 	todu_id       uint
-	role          string `gorm:"default:product owner"`
+	role          string `gorm:"default: owner"`
 	name          string
 	primary_alias string
 }
